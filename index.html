@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f1626">
+<title>직선 놀이터</title>
+<meta name="description" content="수식 없이 손으로 배우는 선형대수 첫걸음 — 선형 판별 퀴즈, 두 직선 놀이터, 카페 영수증 퍼즐, 취향을 점으로 바꾸는 벡터 체험">
+<style>
+:root{--bg:#0f1626;--card:#172238;--card2:#1f2d48;--fg:#eef2fb;--mut:#a3b1cc;--line:#2e3d5e;
+--a:#5fb3ff;--b:#ff9b5c;--ok:#6fdc9a;--bad:#ff7d7d;--gold:#ffd166;--pur:#b79cff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.55}
+[hidden]{display:none!important}
+.wrap{max-width:560px;margin:0 auto;padding:12px 14px 40px}
+h1{font-size:1.2rem;margin:6px 0}
+h1 small{display:block;font-size:.76rem;color:var(--mut);font-weight:400}
+.tabs{display:flex;gap:5px;margin:10px 0}
+.tabs button{flex:1;padding:9px 2px;border:1px solid var(--line);background:var(--card);color:var(--mut);border-radius:10px;font-size:.84rem;font-weight:600}
+.tabs button.on{background:#24406e;color:#fff;border-color:#5fb3ff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+h2{font-size:1rem;margin:2px 0 8px}
+.note{font-size:.86rem;color:var(--mut);margin:8px 0 0}
+.note b{color:var(--fg)}
+.btn{padding:11px 14px;border-radius:12px;border:0;background:linear-gradient(135deg,#2f6fd0,#5fb3ff);color:#fff;font-weight:800;font-size:.95rem;flex:1}
+.btn.sec{background:var(--card2);border:1px solid var(--line);color:var(--fg);font-weight:700}
+.btn.ok{background:#1f5a3c;border:1px solid #6fdc9a}
+.btn.no{background:#5a2626;border:1px solid #ff7d7d}
+.btn.sm{flex:none;padding:7px 11px;font-size:.82rem}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row+.row{margin-top:8px}
+.pill{padding:7px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card2);color:var(--fg);font-size:.84rem}
+.pill.on{border-color:var(--gold);background:#4a3e1a;color:#fff}
+canvas{display:block;width:100%;border-radius:12px;background:#121b2e;touch-action:none}
+.say{background:#132a44;border-left:3px solid var(--a);border-radius:8px;padding:9px 11px;font-size:.92rem;margin-top:10px}
+.say b{color:#fff}
+.say.q{border-left-color:var(--b);background:#2e2118}
+.eq{font-family:"Times New Roman",serif;font-size:1.8rem;text-align:center;padding:16px 8px;background:var(--card2);border-radius:12px;letter-spacing:.5px;margin:6px 0}
+.eq i{font-style:italic}
+.prog{font-size:.8rem;color:var(--mut)}
+.res{margin-top:10px;font-size:.92rem;border-radius:10px;padding:10px 12px}
+.res.g{background:#16352a;border:1px solid #2f7a52}
+.res.r{background:#3a1d1d;border:1px solid #8a3a3a}
+.big{font-size:1.8rem;font-weight:800;text-align:center;margin:4px 0}
+.lineCtl{border-radius:10px;padding:8px 10px;margin-top:8px;background:var(--card2)}
+.lineCtl .hd{font-weight:800;font-size:.95rem;font-family:"Times New Roman",serif}
+.sl{display:grid;grid-template-columns:24px 1fr 34px;gap:6px;align-items:center;font-size:.85rem}
+.sl input{width:100%}
+.sl span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.verd{font-size:1.15rem;font-weight:800;text-align:center;margin-top:10px}
+.receipt{background:#f6f1e7;color:#2a2418;border-radius:10px;padding:10px 12px;font-family:ui-monospace,Menlo,monospace;font-size:.85rem;position:relative;margin-top:8px}
+.receipt .tot{display:flex;justify-content:space-between;border-top:1px dashed #9a8c6a;margin-top:4px;padding-top:4px;font-weight:700}
+.receipt .mark{position:absolute;right:10px;top:8px;font-size:1.3rem}
+.step{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;background:var(--card2);border-radius:10px;padding:8px 10px;margin-top:6px}
+.step b{font-variant-numeric:tabular-nums;min-width:66px;text-align:center}
+.step button{width:40px;height:36px;border-radius:9px;border:1px solid var(--line);background:#26375a;color:#fff;font-size:1.1rem;font-weight:800}
+.taste{display:grid;grid-template-columns:70px 1fr 26px;gap:8px;align-items:center;font-size:.9rem}
+.friends{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.fr{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--card2);border-radius:10px;padding:8px 10px;font-size:.88rem}
+.fr .d{font-variant-numeric:tabular-nums;color:var(--mut);font-size:.8rem}
+.fr.best{border:1px solid var(--gold);background:#3a3218}
+.cart{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:6px;align-items:center;text-align:center;margin-top:8px}
+.cart div{background:var(--card2);border-radius:10px;padding:8px 4px;font-size:.88rem}
+.cart b{display:block;font-size:1.05rem;letter-spacing:2px}
+.nn{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.nn .c{background:var(--card2);border-radius:10px;padding:8px 10px}
+.nn .c .sl{grid-template-columns:52px 1fr 36px}
+.sum{margin-top:12px;background:linear-gradient(135deg,#1d3358,#2a2a5a);border-radius:14px;padding:12px 14px}
+.sum ol{margin:4px 0;padding-left:20px;font-size:.92rem}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#000c;color:#fff;padding:10px 16px;border-radius:999px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+footer{text-align:center;color:var(--mut);font-size:.78rem;margin-top:18px}
+footer a{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>📐 직선 놀이터<small>수식 거의 없이 손으로 배우는 선형대수 첫걸음</small></h1>
+<div class="tabs">
+  <button class="on" data-tab="t1">① 선형</button>
+  <button data-tab="t2">② 두 직선</button>
+  <button data-tab="t3">③ 영수증</button>
+  <button data-tab="t4">④ 취향 점</button>
+</div>
+
+<!-- ===== ① 선형 판별 ===== -->
+<section id="tab-t1">
+  <div class="card">
+    <h2>🔬 두 배 실험 — 입력을 두 배로 하면?</h2>
+    <div class="row"><button class="pill exp on" data-e="coffee">☕ 커피값</button><button class="pill exp" data-e="square">⬛ 정사각형 넓이</button><button class="pill exp" data-e="brake">🚗 제동거리</button></div>
+    <canvas id="ec" width="600" height="260" style="margin-top:10px"></canvas>
+    <div class="sl" style="grid-template-columns:70px 1fr 60px;margin-top:8px"><span id="eLab">잔 수</span><input type="range" id="eR" min="1" max="4" value="1"><span id="eV"></span></div>
+    <div class="say" id="eSay"></div>
+  </div>
+  <div class="card">
+    <h2>🧩 선형일까, 아닐까?</h2>
+    <div class="say q" style="margin-top:0"><b>세 가지 기준이면 충분합니다.</b><br>① 변수에 <b>제곱</b>이 붙지 않는다 ② 변수끼리 <b>곱하지</b> 않는다 ③ 변수를 <b>사인·로그 같은 함수 안</b>에 넣지 않는다.<br><span style="color:var(--mut);font-size:.84rem">변수 = 모르는 숫자를 대신하는 글자(x, y …). 곁에 붙은 숫자(계수)는 √2 여도 괜찮습니다.</span></div>
+    <div class="prog" id="qProg" style="margin-top:10px"></div>
+    <div class="eq" id="qEq"></div>
+    <div class="row"><button class="btn ok" id="qY">선형이다</button><button class="btn no" id="qN">선형이 아니다</button></div>
+    <div id="qRes"></div>
+  </div>
+</section>
+
+<!-- ===== ② 두 직선 ===== -->
+<section id="tab-t2" hidden>
+  <div class="card">
+    <h2>📈 방정식 하나 = 직선 하나</h2>
+    <p class="note" style="margin-top:0">두 식을 <b>동시에</b> 만족하는 점이 연립방정식의 답, 곧 <b>두 직선이 만나는 곳</b>입니다. 숫자를 바꿔 직선을 움직여 보세요.</p>
+    <div class="row" style="margin-top:8px"><span style="font-size:.82rem;color:var(--mut)">카페 영수증:</span><button class="pill pre" data-p="one">① 답이 하나</button><button class="pill pre" data-p="none">② 답 없음</button><button class="pill pre" data-p="inf">③ 무수히 많음</button></div>
+    <canvas id="lc" width="600" height="600" style="margin-top:10px"></canvas>
+    <div class="verd" id="verd"></div>
+    <div class="lineCtl" style="border-left:4px solid var(--a)"><div class="hd" id="l1t" style="color:var(--a)"></div>
+      <div class="sl"><span>a</span><input type="range" id="a1" min="-5" max="5" value="2"><span id="a1v"></span></div>
+      <div class="sl"><span>b</span><input type="range" id="b1" min="-5" max="5" value="1"><span id="b1v"></span></div>
+      <div class="sl"><span>c</span><input type="range" id="c1" min="-24" max="24" value="11"><span id="c1v"></span></div></div>
+    <div class="lineCtl" style="border-left:4px solid var(--b)"><div class="hd" id="l2t" style="color:var(--b)"></div>
+      <div class="sl"><span>a</span><input type="range" id="a2" min="-5" max="5" value="1"><span id="a2v"></span></div>
+      <div class="sl"><span>b</span><input type="range" id="b2" min="-5" max="5" value="2"><span id="b2v"></span></div>
+      <div class="sl"><span>c</span><input type="range" id="c2" min="-24" max="24" value="13"><span id="c2v"></span></div></div>
+    <div class="say" id="lSay"></div>
+  </div>
+  <div class="card">
+    <h2>🎯 도전: 두 직선이 딱 두 점에서 만나게 해 보세요</h2>
+    <p class="note" style="margin-top:0">아무리 숫자를 바꿔도 만나는 점의 개수는 <b>1개, 0개, 무수히 많음</b> 중 하나뿐입니다. 왜 그럴까요?</p>
+    <div class="row" style="margin-top:8px"><button class="btn sec" id="why">이유 보기</button></div>
+    <div id="whyBox" hidden>
+      <div class="say q">두 직선이 서로 다른 <b>두 점</b>에서 만났다고 해 봅시다.</div>
+      <div class="say">그런데 서로 다른 두 점을 지나는 직선은 세상에 <b>딱 하나</b>뿐입니다. 그러니 두 직선은 사실 <b>같은 직선</b> — 완전히 포개집니다.</div>
+      <div class="say q">포개지면 만나는 점이 <b>무수히 많아지겠네요!</b></div>
+      <div class="say"><b>한 번 넘게 만나면 끝까지 함께 간다.</b> 이것이 직선, 곧 선형이 가진 성질입니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ③ 영수증 풀기 ===== -->
+<section id="tab-t3" hidden>
+  <div class="card">
+    <h2>🧾 카페 영수증 퍼즐 — 모르는 가격이 세 개</h2>
+    <p class="note" style="margin-top:0">아메리카노·라떼·케이크 가격을 모릅니다. 영수증 세 장이 모두 맞도록 가격을 맞혀 보세요. 영수증 한 장 = 평면 한 장, 세 평면이 한 점에서 만나는 곳이 답입니다.</p>
+    <div id="rcpts"></div>
+    <div class="step"><span>☕ 아메리카노</span><button data-k="0" data-d="-500">−</button><b id="p0"></b><button data-k="0" data-d="500">+</button></div>
+    <div class="step"><span>🥛 라떼</span><button data-k="1" data-d="-500">−</button><b id="p1"></b><button data-k="1" data-d="500">+</button></div>
+    <div class="step"><span>🍰 케이크</span><button data-k="2" data-d="-500">−</button><b id="p2"></b><button data-k="2" data-d="500">+</button></div>
+    <div class="row" style="margin-top:10px"><button class="btn sec" id="hint">힌트</button><button class="btn sec" id="reset">처음부터</button></div>
+    <div id="rMsg"></div>
+  </div>
+  <div class="card">
+    <h2>🔢 변수가 백 개라면?</h2>
+    <p class="note" style="margin-top:0">원리는 똑같습니다. 다만 눈으로 볼 수 없으니 <b>계산 도구</b>가 필요하고, 그 도구가 <b>행렬</b>입니다. 그리고 세 식이 있다고 늘 풀리는 것은 아닙니다 — 평면 세 장이 <b>삼각기둥</b>처럼 서로 엇갈리면, 어느 두 장은 만나도 세 장이 함께 지나는 점은 없습니다.</p>
+  </div>
+</section>
+
+<!-- ===== ④ 점이 된 취향 ===== -->
+<section id="tab-t4" hidden>
+  <div class="card">
+    <h2>🎬 취향도 점이 된다 — 데이터 한 줄 = 공간의 점 하나</h2>
+    <p class="note" style="margin-top:0">영화 취향을 5점 만점으로 매겨 보세요. 숫자 세 개는 3차원 공간의 점 하나 — 이것을 <b>벡터</b>라고 부릅니다.</p>
+    <div class="taste"><span>💥 액션</span><input type="range" id="tA" min="0" max="5" value="4"><span id="tAv"></span></div>
+    <div class="taste"><span>💕 로맨스</span><input type="range" id="tR" min="0" max="5" value="2"><span id="tRv"></span></div>
+    <div class="taste"><span>🚀 SF</span><input type="range" id="tS" min="0" max="5" value="5"><span id="tSv"></span></div>
+    <canvas id="vc" width="600" height="400" style="margin-top:10px"></canvas>
+    <div class="friends" id="friends"></div>
+    <div class="say" id="rec"></div>
+  </div>
+  <div class="card">
+    <h2>🧺 벡터의 더하기와 늘리기</h2>
+    <div class="cart"><div>월요일<b>🍎🍎 🍊</b>(2, 1)</div><div>＋</div><div>화요일<b>🍎 🍊🍊🍊</b>(1, 3)</div><div>＝</div><div style="border:1px solid var(--gold)">합계<b id="cartSum">🍎🍎🍎 🍊🍊🍊🍊</b>(3, 4)</div></div>
+    <div class="row" style="margin-top:10px"><span style="font-size:.86rem;color:var(--mut)">월요일 장바구니를</span><button class="pill kx" data-k="1">×1</button><button class="pill kx on" data-k="2">×2</button><button class="pill kx" data-k="3">×3</button><span style="font-size:.86rem;color:var(--mut)">로 늘리면</span></div>
+    <div class="big" id="kOut"></div>
+    <p class="note">칸마다 따로 더하고, 칸마다 같은 배수로 늘립니다. <b>더하기와 늘리기</b> — 선형대수학의 기본 도구 두 가지입니다.</p>
+  </div>
+  <div class="card">
+    <h2>🤖 AI의 계산 = 곱해서 더하기</h2>
+    <div class="nn"><div class="c"><div style="font-size:.8rem;color:var(--mut)">입력</div>
+      <div class="sl"><span>x₁</span><input type="range" class="nx" data-i="0" min="0" max="5" value="2"><span></span></div>
+      <div class="sl"><span>x₂</span><input type="range" class="nx" data-i="1" min="0" max="5" value="3"><span></span></div>
+      <div class="sl"><span>x₃</span><input type="range" class="nx" data-i="2" min="0" max="5" value="1"><span></span></div></div>
+      <div class="c"><div style="font-size:.8rem;color:var(--mut)">가중치</div>
+      <div class="sl"><span>w₁</span><input type="range" class="nw" data-i="0" min="0" max="10" value="5"><span></span></div>
+      <div class="sl"><span>w₂</span><input type="range" class="nw" data-i="1" min="0" max="10" value="2"><span></span></div>
+      <div class="sl"><span>w₃</span><input type="range" class="nw" data-i="2" min="0" max="10" value="3"><span></span></div></div></div>
+    <div class="eq" id="nnEq" style="font-size:1.05rem;font-family:inherit"></div>
+    <p class="note">인공지능은 이런 <b>곱해서 더하기</b>를 엄청나게 많이 반복합니다. 앞에서 본 선형 식과 똑같은 모양이죠. 이 계산을 한꺼번에 처리하는 도구가 <b>행렬</b>입니다. 그리고 선형은 <b>쪼개서 계산해 더해도 결과가 같아서</b>, 컴퓨터가 빠르게 처리할 수 있습니다.</p>
+  </div>
+  <div class="sum">
+    <div style="font-weight:800">📝 오늘의 세 줄 정리</div>
+    <ol><li>선형은 <b>비례하고 더하기만</b> 하는 관계, 그래프는 직선입니다.</li><li>연립방정식의 답은 <b>하나·없음·무수히 많음</b> 셋 중 하나. 정확히 두 개는 있을 수 없습니다.</li><li>데이터는 <b>공간의 점</b>이고, 인공지능의 계산은 이 선형 구조 위에서 돌아갑니다.</li></ol>
+    <div class="note">🤔 생각해 볼 질문 — 두 배로 늘렸는데 결과가 두 배가 되지 않는 현상, 주변에서 더 찾아보세요. 곡선도 아주 가까이 확대하면 직선처럼 보인다는 것도 기억해 두세요.</div>
+  </div>
+</section>
+
+<footer>© 2026 정필 수심명 · <a href="https://blog.naver.com/omyman" target="_blank" rel="noopener">blog.naver.com/omyman</a><br>선형대수 01 부록 · 인터넷 없이 동작</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(()=>{
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),1800);}
+const vib=n=>{try{navigator.vibrate&&navigator.vibrate(n);}catch(e){}};
+function prep(cv,ratio){const dpr=Math.min(2,window.devicePixelRatio||1),w=cv.clientWidth||360,h=Math.round(w*ratio);
+  if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+'px';}
+  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);return {c,w,h};}
+function T(c,s,x,y,col,size,al,bl,wt){c.fillStyle=col;c.font=`${wt||''} ${size||12}px -apple-system,"Malgun Gothic",sans-serif`;c.textAlign=al||'center';c.textBaseline=bl||'middle';c.fillText(s,x,y);}
+const won=v=>v.toLocaleString('ko-KR')+'원';
+
+/* ===== ① 두 배 실험 ===== */
+const EXP={coffee:{lab:'잔 수',unit:'잔',f:x=>3000*x,fmt:v=>won(v),name:'커피값',lin:true},
+ square:{lab:'한 변',unit:'cm',f:x=>x*x,fmt:v=>v+' cm²',name:'넓이',lin:false},
+ brake:{lab:'속도',unit:'×20km/h',f:x=>x*x*2.5,fmt:v=>(+v.toFixed(1))+' m',name:'제동거리(대략)',lin:false}};
+let ek='coffee',ex=1;
+function drawExp(){const E=EXP[ek];$('#eLab').textContent=E.lab;$('#eV').textContent=ek==='brake'?(ex*20)+' km/h':ex+' '+E.unit;
+  const {c,w,h}=prep($('#ec'),0.43);c.clearRect(0,0,w,h);
+  const L=40,B=h-30,R=w-12,mx=E.f(4);
+  for(let x=1;x<=4;x++){const v=E.f(x),bh=(v/mx)*(B-20),bw=(R-L)/4*0.55,bx=L+(x-0.5)*(R-L)/4-bw/2;
+    c.fillStyle=x===ex?(E.lin?'#5fb3ff':'#ff9b5c'):'rgba(255,255,255,.12)';c.fillRect(bx,B-bh,bw,bh);
+    T(c,ek==='brake'?(x*20)+'':String(x),bx+bw/2,B+12,'#a3b1cc',11);if(x===ex||x===1)T(c,E.fmt(v),bx+bw/2,B-bh-10,'#eef2fb',11);}
+  // straight line through origin from x=1 value (proportional guide)
+  const k1=E.f(1),cxb=x=>L+(x-0.5)*(R-L)/4;c.setLineDash([5,5]);c.strokeStyle='rgba(111,220,154,.9)';c.lineWidth=2;c.beginPath();
+  for(let x=1;x<=4;x++){const yy=B-(k1*x/mx)*(B-20);x===1?c.moveTo(cxb(x),yy):c.lineTo(cxb(x),yy);}c.stroke();c.setLineDash([]);
+  if(!E.lin)T(c,'비례라면 여기까지',cxb(4),B-(k1*4/mx)*(B-20)-12,'#6fdc9a',10);
+  const ratio=E.f(ex)/E.f(1);
+  $('#eSay').innerHTML=ex===1?`${E.lab}을(를) 늘려 보세요. 입력이 <b>2배</b>가 될 때 결과도 2배가 되는지 봅니다.`:
+   `${E.lab} <b>${ex}배</b> → ${E.name} <b>${+ratio.toFixed(2)}배</b>. `+(E.lin?'입력과 결과가 똑같이 늘어납니다 — <b>선형</b>입니다. 두 사람의 주문을 합치면 값도 그대로 더해지죠.':
+    `입력은 ${ex}배인데 결과는 ${ratio}배! 비례하지 않으니 <b>비선형</b>입니다.${ek==='brake'?' 그래서 과속이 위험합니다.':''}`);}
+$$('.exp').forEach(b=>b.onclick=()=>{ek=b.dataset.e;$$('.exp').forEach(x=>x.classList.toggle('on',x===b));drawExp();});
+$('#eR').oninput=e=>{ex=+e.target.value;drawExp();};
+
+/* ===== ① 퀴즈 ===== */
+const QB=[
+ ['3<i>x</i> + 2<i>y</i> = 12',1,'제곱도, 변수끼리 곱셈도, 함수도 없습니다. 그래프로 그리면 곧은 직선입니다.'],
+ ['<i>x</i> · <i>y</i> = 6',0,'변수 x와 y를 서로 <b>곱했습니다</b>(기준 ②).'],
+ ['<i>x</i>² + <i>y</i> = 4',0,'변수 x에 <b>제곱</b>이 붙었습니다(기준 ①).'],
+ ['√2 <i>x</i> + <i>y</i> = 1',1,'√2는 변수가 아니라 곁에 붙은 숫자(계수)입니다. 계수가 어떤 숫자든 <b>선형</b>입니다.'],
+ ['<i>x</i> + <i>y</i> + <i>z</i> = 100',1,'변수가 셋이어도 제곱·곱셈·함수가 없으면 선형입니다.'],
+ ['<i>y</i> = sin <i>x</i>',0,'변수 x가 <b>사인 함수 안</b>에 들어갔습니다(기준 ③).'],
+ ['<i>y</i> = 3<i>x</i>',1,'커피 한 잔 3천 원처럼 비례하는 관계, 대표적인 선형입니다.'],
+ ['<i>y</i> = log <i>x</i>',0,'변수 x가 <b>로그 함수 안</b>에 있습니다(기준 ③).'],
+ ['0.5<i>a</i> + 0.2<i>b</i> + 0.3<i>c</i> = 1.9',1,'곱해서 더하기 — 인공지능의 기본 계산과 똑같은 모양의 선형식입니다.'],
+ ['<i>y</i> = 2<sup><i>x</i></sup>',0,'변수 x가 <b>지수(거듭제곱의 자리)</b>로 올라갔습니다. 함수 안에 들어간 것과 같습니다(기준 ③).'],
+ ['π<i>x</i> − 7<i>y</i> = 0',1,'π도 그냥 숫자(계수)입니다. 선형입니다.'],
+ ['<i>x</i> · <i>x</i> = 9',0,'x·x는 결국 x²입니다. 변수끼리 곱했으니 비선형입니다.']];
+let qs=[],qi=0,qscore=0,qans=false;
+function qNew(){qs=QB.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,8);qi=0;qscore=0;qShow();}
+function qShow(){if(qi>=qs.length){$('#qProg').textContent='';$('#qEq').innerHTML=`${qscore} / ${qs.length}`;
+    $('#qRes').innerHTML=`<div class="res g">${qscore>=7?'🎉 훌륭합니다! 오늘 이야기의 절반은 이미 이해하셨습니다.':qscore>=5?'👍 좋아요! 세 가지 기준을 한 번 더 보면 만점입니다.':'🙂 괜찮습니다. 세 가지 기준(제곱·곱셈·함수)만 기억하면 금방 늘어요.'}</div><div class="row" style="margin-top:8px"><button class="btn" id="qAgain">다시 풀기</button></div>`;
+    $('#qY').hidden=$('#qN').hidden=true;$('#qAgain').onclick=()=>{$('#qY').hidden=$('#qN').hidden=false;qNew();};return;}
+  const q=QB[qs[qi]];qans=false;$('#qProg').textContent=`문제 ${qi+1} / ${qs.length} · 맞힌 수 ${qscore}`;$('#qEq').innerHTML=q[0];$('#qRes').innerHTML='';}
+function qAns(v){if(qans)return;qans=true;const q=QB[qs[qi]],ok=v===q[1];if(ok)qscore++;vib(ok?10:[20,30,20]);
+  $('#qRes').innerHTML=`<div class="res ${ok?'g':'r'}"><b>${ok?'정답!':'아쉬워요.'}</b> ${q[1]?'선형입니다.':'선형이 아닙니다.'} ${q[2]}</div><div class="row" style="margin-top:8px"><button class="btn sec" id="qNext">다음</button></div>`;
+  $('#qNext').onclick=()=>{qi++;qShow();};}
+$('#qY').onclick=()=>qAns(1);$('#qN').onclick=()=>qAns(0);
+
+/* ===== ② 두 직선 ===== */
+const ids=['a1','b1','c1','a2','b2','c2'];let P={a1:2,b1:1,c1:11,a2:1,b2:2,c2:13};
+const fmtEq=(a,b,c)=>{if(a===0&&b===0)return `0 = ${c}`;let s='';const term=(k,v,first)=>k===0?'':`${k<0?(first?'−':' − '):(first?'':' + ')}${Math.abs(k)===1?'':Math.abs(k)}${v}`;
+  s=term(a,'x',true);s+=term(b,'y',!s);return `${s} = ${c}`;};
+function classify(){const {a1,b1,c1,a2,b2,c2}=P,det=a1*b2-a2*b1;
+  const z1=a1===0&&b1===0,z2=a2===0&&b2===0;if(z1||z2)return {k:'deg'};
+  if(det!==0)return {k:'one',x:(c1*b2-c2*b1)/det,y:(a1*c2-a2*c1)/det};
+  // parallel: same line if proportional including c
+  const same=(a1*c2-a2*c1===0)&&(b1*c2-b2*c1===0);return {k:same?'inf':'none'};}
+function seg(a,b,c,X0,X1,Y0,Y1){const pts=[];
+  if(b!==0){[X0,X1].forEach(x=>{const y=(c-a*x)/b;if(y>=Y0-1e-9&&y<=Y1+1e-9)pts.push([x,y]);});}
+  if(a!==0){[Y0,Y1].forEach(y=>{const x=(c-b*y)/a;if(x>=X0-1e-9&&x<=X1+1e-9)pts.push([x,y]);});}
+  return pts.length>=2?[pts[0],pts.find(p=>Math.hypot(p[0]-pts[0][0],p[1]-pts[0][1])>1e-6)||pts[1]]:null;}
+function drawLines(){ids.forEach(k=>{$('#'+k+'v').textContent=P[k];});
+  $('#l1t').textContent='식 ① '+fmtEq(P.a1,P.b1,P.c1);$('#l2t').textContent='식 ② '+fmtEq(P.a2,P.b2,P.c2);
+  const {c,w,h}=prep($('#lc'),1);c.clearRect(0,0,w,h);const X0=-4,X1=14,Y0=-4,Y1=14,sx=x=>(x-X0)/(X1-X0)*w,sy=y=>h-(y-Y0)/(Y1-Y0)*h;
+  c.strokeStyle='#1f2d48';c.lineWidth=1;for(let i=X0;i<=X1;i++){c.beginPath();c.moveTo(sx(i),0);c.lineTo(sx(i),h);c.stroke();c.beginPath();c.moveTo(0,sy(i));c.lineTo(w,sy(i));c.stroke();}
+  c.strokeStyle='#4a5b80';c.lineWidth=1.5;c.beginPath();c.moveTo(sx(0),0);c.lineTo(sx(0),h);c.moveTo(0,sy(0));c.lineTo(w,sy(0));c.stroke();
+  for(let i=2;i<=12;i+=2){T(c,String(i),sx(i),sy(0)+10,'#6f7fa3',10);T(c,String(i),sx(0)-10,sy(i),'#6f7fa3',10);}
+  const cl=classify();
+  const dl=(a,b,cc,col,wd,dash)=>{const s=seg(a,b,cc,X0,X1,Y0,Y1);if(!s)return;c.strokeStyle=col;c.lineWidth=wd;c.setLineDash(dash||[]);c.beginPath();c.moveTo(sx(s[0][0]),sy(s[0][1]));c.lineTo(sx(s[1][0]),sy(s[1][1]));c.stroke();c.setLineDash([]);};
+  dl(P.a1,P.b1,P.c1,'#5fb3ff',cl.k==='inf'?8:3.5);dl(P.a2,P.b2,P.c2,'#ff9b5c',3,cl.k==='inf'?[10,8]:[]);
+  let v='',say='';
+  if(cl.k==='one'){const X=sx(cl.x),Y=sy(cl.y);c.beginPath();c.arc(X,Y,8,0,7);c.fillStyle='#ffd166';c.fill();c.strokeStyle='#fff';c.lineWidth=2;c.stroke();
+    const fx=+cl.x.toFixed(2),fy=+cl.y.toFixed(2);T(c,`(${fx}, ${fy})`,X+(X>w-90?-12:12),Y-16,'#ffd166',13,X>w-90?'right':'left','middle','bold');
+    v='✅ 한 점에서 만남 → 답이 하나';say=`두 직선이 엇갈려 <b>한 점 (${fx}, ${fy})</b>에서 만납니다. 이 점이 두 식을 동시에 만족하는 유일한 답입니다.`+(P.a1===2&&P.b1===1&&P.c1===11&&P.a2===1&&P.b2===2&&P.c2===13?' 카페로 읽으면 <b>아메리카노 3천 원, 라떼 5천 원</b>(단위: 천 원).':'');}
+  else if(cl.k==='none'){v='🚫 나란히 달림 → 답 없음';say='두 직선이 끝까지 <b>나란히</b> 달려 영원히 만나지 않습니다. 두 식을 동시에 만족하는 점이 없습니다.'+(P.a2===2*P.a1&&P.b2===2*P.b1?' 같은 메뉴를 두 배로 시켰는데 값이 두 배가 아닌, <b>모순된 영수증</b>입니다.':'');}
+  else if(cl.k==='inf'){v='♾️ 완전히 포개짐 → 답이 무수히 많음';say='두 직선이 <b>포개져 하나</b>가 되었습니다. 직선 위 모든 점이 답 — 같은 말을 두 번 한, <b>정보가 모자란 영수증</b>입니다.';}
+  else {v='⚠️ x와 y의 숫자가 모두 0인 식';say='a와 b가 모두 0이면 직선이 아닙니다. 숫자를 하나 이상 바꿔 주세요.';}
+  $('#verd').textContent=v;$('#lSay').innerHTML=say;}
+ids.forEach(k=>$('#'+k).addEventListener('input',e=>{P[k]=+e.target.value;drawLines();}));
+const PRE={one:{a1:2,b1:1,c1:11,a2:1,b2:2,c2:13},none:{a1:2,b1:1,c1:11,a2:4,b2:2,c2:20},inf:{a1:2,b1:1,c1:11,a2:4,b2:2,c2:22}};
+$$('.pre').forEach(b=>b.onclick=()=>{P={...PRE[b.dataset.p]};ids.forEach(k=>$('#'+k).value=P[k]);$$('.pre').forEach(x=>x.classList.toggle('on',x===b));drawLines();});
+$('#why').onclick=()=>{$('#whyBox').hidden=!$('#whyBox').hidden;$('#why').textContent=$('#whyBox').hidden?'이유 보기':'접기';};
+
+/* ===== ③ 영수증 ===== */
+const R3=[{items:[['☕',1],['🥛',1],['🍰',1]],tot:14000,label:'아메리카노 1 · 라떼 1 · 케이크 1'},{items:[['☕',2],['🥛',1],['🍰',0]],tot:11000,label:'아메리카노 2 · 라떼 1'},{items:[['☕',1],['🥛',0],['🍰',2]],tot:15000,label:'아메리카노 1 · 케이크 2'}];
+const ANS=[3000,5000,6000];let pr=[2000,2000,2000],hintN=0,solved=false;
+function rRender(){[0,1,2].forEach(k=>$('#p'+k).textContent=won(pr[k]));
+  let all=true;$('#rcpts').innerHTML=R3.map((r,i)=>{const s=r.items.reduce((a,[_,n],k)=>a+n*pr[k],0),ok=s===r.tot;if(!ok)all=false;
+    return `<div class="receipt"><span class="mark">${ok?'✅':s>r.tot?'🔺':'🔻'}</span><div style="font-weight:700">영수증 ${i+1}</div><div>${r.label}</div><div class="tot"><span>합계 ${won(r.tot)}</span><span style="color:${ok?'#1f7a46':'#a33'}">지금 계산 ${won(s)}</span></div></div>`;}).join('');
+  if(all&&!solved){solved=true;vib([30,40,80]);$('#rMsg').innerHTML='<div class="res g" style="margin-top:10px">🎉 <b>세 영수증이 모두 맞았습니다!</b> 아메리카노 3,000원 · 라떼 5,000원 · 케이크 6,000원. 세 평면이 한 점에서 만난 것입니다.</div>';}
+  else if(!all){solved=false;if(!$('#rMsg').dataset.h)$('#rMsg').innerHTML='<p class="note">🔺 계산이 합계보다 많음 · 🔻 적음. 영수증 2부터 보면 쉽습니다 — 메뉴가 두 가지뿐이니까요.</p>';}}
+$$('.step button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;pr[k]=Math.max(0,Math.min(20000,pr[k]+ +b.dataset.d));$('#rMsg').dataset.h='';rRender();});
+const HINTS=['영수증 2와 3에는 메뉴가 두 가지씩만 있습니다. 2번 영수증에서 아메리카노 2잔 + 라떼 1잔 = 11,000원.','앞 영상의 두 직선 문제와 같습니다. 아메리카노는 3,000원입니다.','아메리카노가 3,000원이면 영수증 2에서 라떼 = 11,000 − 6,000 = 5,000원, 영수증 3에서 케이크 = (15,000 − 3,000) ÷ 2 = 6,000원.'];
+$('#hint').onclick=()=>{$('#rMsg').dataset.h='1';$('#rMsg').innerHTML=`<div class="say q">💡 힌트 ${Math.min(hintN+1,3)}: ${HINTS[Math.min(hintN,2)]}</div>`;hintN++;};
+$('#reset').onclick=()=>{pr=[2000,2000,2000];hintN=0;solved=false;$('#rMsg').dataset.h='';rRender();};
+
+/* ===== ④ 취향 점 ===== */
+const FR=[['민지','🦸',[5,1,4],'우주 전쟁 액션 영화'],['준호','💌',[1,5,1],'잔잔한 첫사랑 영화'],['서연','🎭',[3,3,3],'모험과 로맨스가 섞인 영화'],['태오','👽',[2,1,5],'시간 여행 SF 영화'],['하나','🏃',[4,4,1],'달리는 로맨스 액션 영화']];
+let me=[4,2,5];
+function drawTaste(){['A','R','S'].forEach((k,i)=>$('#t'+k+'v').textContent=me[i]);
+  const ds=FR.map(f=>Math.hypot(f[2][0]-me[0],f[2][1]-me[1],f[2][2]-me[2]));const bi=ds.indexOf(Math.min(...ds));
+  $('#friends').innerHTML=FR.map((f,i)=>`<div class="fr${i===bi?' best':''}"><span style="font-size:1.4rem">${f[1]}</span><span><b>${f[0]}</b> (${f[2].join(', ')})<br><span class="d">좋아하는 영화: ${f[3]}</span></span><span class="d">거리 ${ds[i].toFixed(1)}</span></div>`).join('');
+  $('#rec').innerHTML=`나는 점 <b>(${me.join(', ')})</b>. 가장 가까운 점은 <b>${FR[bi][0]}</b>(거리 ${ds[bi].toFixed(1)}) — 그래서 <b>"${FR[bi][3]}"</b>를 추천할 수 있습니다. 점수 차이가 작을수록 점이 가깝습니다. 실제 서비스는 훨씬 복잡하지만, 출발점은 <b>취향을 점으로 바꾸는 일</b>입니다.`;
+  const {c,w,h}=prep($('#vc'),0.72);c.clearRect(0,0,w,h);const L=40,B=h-34,R=w-24,Tp=30,sx=v=>L+(v+0.3)/5.6*(R-L),sy=v=>B-(v+0.3)/5.6*(B-Tp);
+  c.strokeStyle='#26375a';for(let i=0;i<=5;i++){c.beginPath();c.moveTo(sx(i),Tp);c.lineTo(sx(i),B);c.stroke();c.beginPath();c.moveTo(L,sy(i));c.lineTo(R,sy(i));c.stroke();T(c,String(i),sx(i),B+14,'#6f7fa3',10);T(c,String(i),L-12,sy(i),'#6f7fa3',10);}
+  T(c,'💥 액션 →',R+18,h-3,'#a3b1cc',11,'right','bottom');T(c,'🚀 SF ↑',6,10,'#a3b1cc',11,'left','top');
+  const bx=sx(FR[bi][2][0]),by=sy(FR[bi][2][2]);c.setLineDash([5,4]);c.strokeStyle='#ffd166';c.lineWidth=2;c.beginPath();c.moveTo(sx(me[0]),sy(me[2]));c.lineTo(bx,by);c.stroke();c.setLineDash([]);
+  FR.forEach((f,i)=>{const r=6+f[2][1]*2.4;c.beginPath();c.arc(sx(f[2][0]),sy(f[2][2]),r,0,7);c.fillStyle=i===bi?'rgba(255,209,102,.35)':'rgba(183,156,255,.25)';c.fill();c.strokeStyle=i===bi?'#ffd166':'#b79cff';c.lineWidth=1.5;c.stroke();T(c,f[0],sx(f[2][0]),sy(f[2][2])-r-8,'#eef2fb',11);});
+  const r=6+me[1]*2.4;c.beginPath();c.arc(sx(me[0]),sy(me[2]),r,0,7);c.fillStyle='rgba(95,179,255,.55)';c.fill();c.strokeStyle='#fff';c.lineWidth=2.5;c.stroke();T(c,'나',sx(me[0]),sy(me[2]),'#fff',12,'center','middle','bold');
+  T(c,'원 크기 = 로맨스 점수',R+18,10,'#6f7fa3',10,'right','top');}
+['A','R','S'].forEach((k,i)=>$('#t'+k).addEventListener('input',e=>{me[i]=+e.target.value;drawTaste();}));
+function kx(k){$('#kOut').textContent=`(${2*k}, ${1*k}) = ${'🍎'.repeat(2*k)} ${'🍊'.repeat(k)}`;}
+$$('.kx').forEach(b=>b.onclick=()=>{$$('.kx').forEach(x=>x.classList.toggle('on',x===b));kx(+b.dataset.k);});
+function nn(){const x=$$('.nx').map(i=>+i.value),wv=$$('.nw').map(i=>+i.value/10);
+  $$('.nx').forEach((i,k)=>i.nextElementSibling.textContent=x[k]);$$('.nw').forEach((i,k)=>i.nextElementSibling.textContent=wv[k].toFixed(1));
+  const prods=x.map((v,k)=>+(v*wv[k]).toFixed(2)),s=+prods.reduce((a,b)=>a+b,0).toFixed(2);
+  $('#nnEq').innerHTML=x.map((v,k)=>`${v}×${wv[k].toFixed(1)}`).join(' + ')+`<br>= ${prods.join(' + ')} = <b style="color:#ffd166;font-size:1.3rem">${s}</b>`;}
+$$('.nx,.nw').forEach(i=>i.addEventListener('input',nn));
+
+/* ===== 탭 ===== */
+function show(t){$$('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));['t1','t2','t3','t4'].forEach(k=>$('#tab-'+k).hidden=k!==t);
+  if(t==='t1')drawExp();if(t==='t2')drawLines();if(t==='t3')rRender();if(t==='t4'){drawTaste();nn();}window.scrollTo(0,0);}
+$$('.tabs button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+window.addEventListener('resize',()=>{if(!$('#tab-t1').hidden)drawExp();if(!$('#tab-t2').hidden)drawLines();if(!$('#tab-t4').hidden)drawTaste();});
+drawExp();qNew();kx(2);
+})();
+</script>
+</body>
+</html>
